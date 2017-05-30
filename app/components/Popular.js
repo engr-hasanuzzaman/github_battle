@@ -2,6 +2,35 @@
  * Created by sumon on 5/29/17.
  */
 var React = require('react');
+var PropTypes = require('prop-types');
+
+function SelectLanguage(props) {
+  var languages = ['All', 'JavaScript', 'Ruby', 'Java', 'CSS', 'Python', 'C#'];
+
+  return(
+    <div>
+      <ul className='languages'>
+      {
+        languages.map(function (lang) {
+          return(
+            <li
+              key={lang}
+              style={props.onSelect === lang ? {color: '#d0021b'} : null }
+              onClick={props.updateLanguage.bind(null, lang)}>
+              {lang}
+            </li>
+        );
+        })
+      }
+      </ul>
+  </div>
+  );
+}
+
+PropTypes.selectLanguage = {
+  onSelect: PropTypes.string.isRequired,
+  updateLanguage: PropTypes.func.isRequired,
+}
 
 class Popular extends React.Component{
   constructor(props){
@@ -24,25 +53,9 @@ class Popular extends React.Component{
   }
 
   render(){
-    var languages = ['All', 'JavaScript', 'Ruby', 'Java', 'CSS', 'Python'];
-
     return(
-      <div>
-        <ul className='languages'>
-        {
-          languages.map(function (lang) {
-            return(
-              <li
-                key={lang}
-                style={this.state.selectedLanguage === lang ? {color: '#d0021b'} : null }
-                onClick={this.updateLanguage.bind(null, lang)}>
-                {lang}
-              </li>
-          );
-          }, this)
-        }
-        </ul>
-    </div>
+      <SelectLanguage onSelect={this.state.selectedLanguage}
+        updateLanguage={this.updateLanguage} />
     );
   }
 }
