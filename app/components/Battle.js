@@ -1,86 +1,109 @@
 var React = require('react');
 var PropTypes = require('prop-types');
 
-class PlayerInput extends React.Component{
-  constructor(props){
-    super(props)
-
+class PlayerInput extends React.Component {
+  constructor(props) {
+    super(props);
     this.state = {
-      username: '',
+      username: ''
     };
 
-    this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
-
-  handleSubmit(event){
-    event.preventDefault();
-    console.log('handl submint' + this.state.username);
-    this.props.onSubmit(this.props.id, this.state.username);
-  }
-
-  handleChange(event){
+  handleChange(event) {
     var value = event.target.value;
 
-    this.setState(function() {
-      return { username: value };
+    this.setState(function () {
+      return {
+        username: value
+      }
     });
   }
+  handleSubmit(event) {
+    event.preventDefault();
 
-    render(){
-        return(
-          <form className='column' onSubmit={this.handleSubmit}>
-            <label> {this.props.label}</label>
-            <input
-              value={this.state.username}
-              onChange={this.handleChange}
-              placeholder='input github username'
-              type='text'
-            />
-            <button onSubmit={this.handleSubmit}>
-              Submit
-            </button>
-          </form>
-        );
-    }
+    this.props.onSubmit(
+      this.props.id,
+      this.state.username
+    );
+  }
+  render() {
+    return (
+      <form className='column' onSubmit={this.handleSubmit}>
+        <label className='header' htmlFor='username'>{this.props.label}</label>
+        <input
+          id='username'
+          placeholder='github username'
+          type='text'
+          value={this.state.username}
+          autoComplete='off'
+          onChange={this.handleChange}
+        />
+        <button
+          className='button'
+          type='submit'
+          disabled={!this.state.username}>
+            Submit
+        </button>
+      </form>
+    )
+  }
 }
 
-PlayerInput.PropTypes = {
+PlayerInput.propTypes = {
   id: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   onSubmit: PropTypes.func.isRequired,
 }
 
-class Battle extends React.Component{
-  constructor(props){
-    super(props);
+PlayerInput.defaultProps = {
+  label: 'Username',
+}
 
+class Battle extends React.Component {
+  constructor(props) {
+    super(props);
     this.state = {
-      first_name: '',
-      first_pic: '',
-      second_name: '',
-      second_pic: ''
-    }
+      playerOneName: '',
+      playerTwoName: '',
+      playerOneImage: null,
+      playerTwoImage: null,
+    };
 
     this.handleSubmit = this.handleSubmit.bind(this);
   }
-
-  handleSubmit(id, name){
-    this.setState(function() {
+  handleSubmit(id, username) {
+    this.setState(function () {
       var newState = {};
-      newState[id + '_name'] = name;
-      newState[id + '_pic'] = 'https://github.com/' + name + '.png?size=200'
+      newState[id + 'Name'] = username;
+      newState[id + 'Image'] = 'https://github.com/' + username + '.png?size=200'
       return newState;
     });
   }
+  render() {
+    var playerOneName = this.state.playerOneName;
+    var playerTwoName = this.state.playerTwoName;
 
-  render(){
-    return(
+    return (
       <div>
-        {!this.state.first_name && <PlayerInput label='Input first username' id='first' onSubmit={this.handleSubmit}/>}
-        {!this.state.second_name && <PlayerInput label='Input second username' id='second' onSubmit={this.handleSubmit}/> }
+        <div className='row'>
+          {!playerOneName &&
+            <PlayerInput
+              id='playerOne'
+              label='Player One'
+              onSubmit={this.handleSubmit}
+            />}
+
+          {!playerTwoName &&
+            <PlayerInput
+              id='playerTwo'
+              label='Player Two'
+              onSubmit={this.handleSubmit}
+            />}
+        </div>
       </div>
-    );
+    )
   }
 }
 
